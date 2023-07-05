@@ -23,23 +23,30 @@ dependencies {
     implementation("io.micronaut:micronaut-http-client")
     implementation("io.micronaut:micronaut-jackson-databind")
     implementation("jakarta.annotation:jakarta.annotation-api")
-    runtimeOnly("ch.qos.logback:logback-classic")
-    compileOnly("org.graalvm.nativeimage:svm")
-
     implementation("io.micronaut:micronaut-validation")
     implementation("com.oracle.database.graph:opg-client:23.1.0")
     implementation("commons-io:commons-io:2.11.0")
+
+    // Exclude Log4j SLF4J binding
+    implementation("ch.qos.logback:logback-classic") {
+        exclude group: "org.slf4j", module: "slf4j-api"
+    }
+
+    implementation("org.fusesource.jansi:jansi:2.1.1")
+    compileOnly("org.graalvm.nativeimage:svm")
 }
 
 application {
     mainClass.set("com.oracle.example.Application")
 }
+
 java {
     sourceCompatibility = JavaVersion.toVersion("11")
     targetCompatibility = JavaVersion.toVersion("11")
 }
 
 graalvmNative.toolchainDetection = false
+
 micronaut {
     runtime("netty")
     testRuntime("junit5")
@@ -64,5 +71,6 @@ task dropHrDataSetAndPgView(type: JavaExec) {
     mainClass.set("com.oracle.scripts.RunDropScripts")
     classpath = sourceSets.main.runtimeClasspath
 }
+
 
 
